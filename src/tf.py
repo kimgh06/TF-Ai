@@ -1,42 +1,46 @@
-import tensorflow as tf
-print("\nTensorFlow version:", tf.__version__)
-mnist = tf.keras.datasets.mnist
+# 파일로부터 데이터 읽어오기
+import pandas as pd
+파일경로 = 'https://raw.githubusercontent.com/blackdew/tensorflow1/master/csv/lemonade.csv'
+레모네이드 = pd.read_csv(파일경로)
 
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
-x_train, x_test = x_train / 255.0, x_test / 255.0
-model = tf.keras.models.Sequential([
-    tf.keras.layers.Flatten(input_shape=(28, 28)),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dropout(0.2),
-    tf.keras.layers.Dense(10, activation='softmax')
-])
+파일경로 = 'https://raw.githubusercontent.com/blackdew/tensorflow1/master/csv/boston.csv'
+보스턴 = pd.read_csv(파일경로)
 
-model.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
+파일경로 = 'https://raw.githubusercontent.com/blackdew/tensorflow1/master/csv/iris.csv'
+아이리스 = pd.read_csv(파일경로)
 
-predictions = model(x_train[:1]).numpy()
-predictions
+###########################
+# 데이터의 모양확인
+print(레모네이드.shape)
+print(보스턴.shape)
+print(아이리스.shape)
 
-tf.nn.softmax(predictions).numpy()
+###########################
+# 데이터 칼럼이름 확인
+print(레모네이드.columns)
+print(보스턴.columns)
+print(아이리스.columns)
 
-loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 
-loss_fn(y_train[:1], predictions).numpy()
+###########################
+# 독립변수와 종속변수 분리
+독립 = 레모네이드[['온도']]
+종속 = 레모네이드[['판매량']]
+print(독립.shape, 종속.shape)
 
-model.compile(optimizer='adam',
-              loss=loss_fn,
-              metrics=['accuracy'])
+독립 = 보스턴[['crim', 'zn', 'indus', 'chas', 'nox',
+          'rm', 'age', 'dis', 'rad', 'tax',
+          'ptratio', 'b', 'lstat']]
+종속 = 보스턴[['medv']]
+print(독립.shape, 종속.shape)
 
-model.fit(x_train, y_train, epochs=5)
+독립 = 아이리스[['꽃잎길이', '꽃잎폭', '꽃받침길이', '꽃받침폭']]
+종속 = 아이리스[['품종']]
+print(독립.shape, 종속.shape)
 
-model.fit(x_train, y_train, epochs=5)
 
-model.evaluate(x_test,  y_test, verbose=2)
-
-probability_model = tf.keras.Sequential([
-    model,
-    tf.keras.layers.Softmax()
-])
-
-probability_model(x_test[:5])
+###########################
+# 각각의 데이터 확인해보기
+print(레모네이드.head())
+print(보스턴.head())
+print(아이리스.head())
