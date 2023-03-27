@@ -10,7 +10,7 @@ function App() {
     xhr.open("POST", url);
 
     xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.setRequestHeader("Authorization", "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");
+    xhr.setRequestHeader("Authorization", "fuck");
 
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
