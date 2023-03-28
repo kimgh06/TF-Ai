@@ -22,17 +22,17 @@ print(독립.shape, 종속.shape)
 
 def model_structure(x, y):
     X = tf.keras.layers.Input(shape=[x])
-    Y = tf.keras.layers.Dense(y)(X)
+    Y = tf.keras.layers.Dense(y, activation='softmax')(X)
     global model
     model = tf.keras.models.Model(X, Y)
-    model.compile(loss="mse")
-    model.fit(독립, 종속, epochs=10000, verbose=1)
+    model.compile(loss="categorical_crossentropy", metrics='accuracy')
+    model.fit(독립, 종속, epochs=1000, verbose=1)
     model.fit(독립, 종속, epochs=10)
 
 
-model_structure(1, 1)
-print(model.predict(독립))
-print(model.predict([[15]]))
+# model_structure(1, 1)
+# print(model.predict(독립))
+# print(model.predict([[15]]))
 
 독립 = 보스턴[['crim', 'zn', 'indus', 'chas', 'nox',
           'rm', 'age', 'dis', 'rad', 'tax',
@@ -40,16 +40,27 @@ print(model.predict([[15]]))
 종속 = 보스턴[['medv']]
 print(독립.shape, 종속.shape)
 
-model_structure(13, 1)
-print(model.predict(독립[5:10]))
-print(종속[5:10])
+# model_structure(13, 1)
+# print(model.predict(독립[5:10]))
+# print(종속[5:10])
+# print(model.get_weights())
+
+아이리스.head()
+
+아이리스 = pd.get_dummies(아이리스)
+독립 = 아이리스[['꽃잎길이', '꽃잎폭', '꽃받침길이', '꽃받침폭']]
+종속 = 아이리스[['품종_setosa', '품종_versicolor', '품종_virginica']]
+
+model_structure(4, 3)
+print(model.predict(독립[:5]))
+print(종속[:5])
+
+print(model.predict(독립[-5:]))
+print(종속[:len(종속)])
+
 print(model.get_weights())
 
-독립 = 아이리스[['꽃잎길이', '꽃잎폭', '꽃받침길이', '꽃받침폭']]
-종속 = 아이리스[['품종']]
-print(독립.shape, 종속.shape)
 
-
-print(레모네이드.head())
-print(보스턴.head())
-print(아이리스.head())
+# print(레모네이드.head())
+# print(보스턴.head())
+# print(아이리스.head())
