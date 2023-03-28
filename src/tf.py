@@ -26,7 +26,7 @@ def model_structure(x, y):
     global model
     model = tf.keras.models.Model(X, Y)
     model.compile(loss="categorical_crossentropy", metrics='accuracy')
-    model.fit(독립, 종속, epochs=1000, verbose=1)
+    model.fit(독립, 종속, epochs=1000, verbose=0)
     model.fit(독립, 종속, epochs=10)
 
 
@@ -40,10 +40,10 @@ def model_structure(x, y):
 종속 = 보스턴[['medv']]
 print(독립.shape, 종속.shape)
 
-# model_structure(13, 1)
-# print(model.predict(독립[5:10]))
-# print(종속[5:10])
-# print(model.get_weights())
+model_structure(13, 1)
+print(model.predict(독립[5:10]))
+print(종속[5:10])
+print(model.get_weights())
 
 아이리스.head()
 
@@ -56,7 +56,7 @@ print(model.predict(독립[:5]))
 print(종속[:5])
 
 print(model.predict(독립[-5:]))
-print(종속[:len(종속)])
+print(종속[-5:])
 
 print(model.get_weights())
 
