@@ -18,7 +18,14 @@ print(독립.shape, 종속.shape)
 ###########################
 # 2. 모델의 구조를 만듭니다
 X = tf.keras.layers.Input(shape=[13])
-H = tf.keras.layers.Dense(100000, activation='swish')(X)
+H = tf.keras.layers.Dense(1000)(X)
+H = tf.keras.layers.BatchNormalization()(H)
+H = tf.keras.layers.Activation('swish')(H)
+
+H = tf.keras.layers.Dense(1000)(H)
+H = tf.keras.layers.BatchNormalization()(H)
+H = tf.keras.layers.Activation('swish')(H)
+
 Y = tf.keras.layers.Dense(1)(H)
 model = tf.keras.models.Model(X, Y)
 model.compile(loss='mse')
