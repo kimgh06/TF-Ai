@@ -120,9 +120,25 @@ plt.legend(loc="upper right")
 plt.title('tr & val acc')
 plt.show()
 
-img_gen = ImageDataGenerator(rescale=1./255, horizontal_flip=True)
-tr_data_gen = img_gen.flow_from_directory(
-    batch_size=batch_size, directory=tr_dir, shuffle=True, target_size=(IMG_HEIGHT, IMG_WIDTH))
-aug_img = [tr_data_gen[0][0][0] for i in range(5)]
+tr_img_gen = ImageDataGenerator(
+    rescale=1./255,
+    rotation_range=45,
+    width_shift_range=.15,
+    height_shift_range=.15,
+    horizontal_flip=True,
+    zoom_range=0.5
+)
 
+tr_data_gen = tr_img_gen.flow_from_directory(batch_size=batch_size,
+                                             directory=tr_dir,
+                                             shuffle=True,
+                                             target_size=(
+                                                 IMG_HEIGHT, IMG_WIDTH),
+                                             class_mode='binary')
+aug_img = [tr_data_gen[0][0][0] for i in range(5)]
 pl_img(aug_img)
+va_data_gen = va_img_gen.flow_from_directory(batch_size=batch_size,
+                                             directory=va_dir,
+                                             target_size=(
+                                                 IMG_HEIGHT, IMG_WIDTH),
+                                             class_mode='binary')
