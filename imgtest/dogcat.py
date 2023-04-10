@@ -142,3 +142,56 @@ va_data_gen = va_img_gen.flow_from_directory(batch_size=batch_size,
                                              target_size=(
                                                  IMG_HEIGHT, IMG_WIDTH),
                                              class_mode='binary')
+
+va_img_gen = ImageDataGenerator(rescale=1./255)
+va_data_gen = va_img_gen.flow_from_directory(
+    batch_size=batch_size, directory=va_dir, target_size=(IMG_HEIGHT, IMG_WIDTH), class_mode='binary')
+
+new_mod = Sequential([
+    Conv2D(16, 3, padding='same', activation='relu',
+           input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
+    MaxPooling2D(),
+    Dropout(0.2),
+    Conv2D(32, 3, padding='same', activation='relu'),
+    MaxPooling2D(),
+    Conv2D(64, 3, padding='same', activation='relu'),
+    MaxPooling2D(),
+    Dropout(0.2),
+    Flatten(),
+    Dense(512, activation='relu'),
+    Dense(1)
+])
+
+new_mod.compile(optimizer='adam', loss=tf.keras.losses.BinaryCrossentropy(
+    from_logits=True), metrics=['accuracy'])
+new_mod.summary()
+
+result = new_mod.fit_generator(
+    tr_data_gen,
+    steps_per_epoch=to_tr//batch_size,
+    epochs=epochs,
+    validation_data=va_data_gen,
+    validation_steps=to_va//batch_size
+)
+
+acc = result.history['accuracy']
+va_acc = result.history['val_accuracy']
+
+loss = result.history['loss']
+va_loss = result.history['val_loss']
+
+ep_ran = range(epochs)
+
+plt.figure(figsize=(8, 8))
+plt.subplot(1, 2, 1)
+plt.plot(ep_ran, acc, label='Training Accuracy')
+plt.plot(ep_ran, va_acc, label='Validation Accuracy')
+plt.legend(loc='lower right')
+plt.title('Training and Validation Accuracy')
+
+plt.subplot(1, 2, 2)
+plt.plot(ep_ran, loss, label='Training Loss')
+plt.plot(ep_ran, va_loss, label='Validation Loss')
+plt.legend(loc='upper right')
+plt.title('Training and Validation Loss')
+plt.show()
