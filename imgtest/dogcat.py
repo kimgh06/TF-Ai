@@ -1,4 +1,6 @@
 import tensorflow as tf
+from keras.models import Sequential
+from keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -64,8 +66,41 @@ def pl_img(img_arr):
     for i, ax in zip(img_arr, axes):
         ax.imshow(i)
         ax.axis('off')
-    plt.tight_layout()
-    plt.show()
+    # plt.tight_layout()
+    # plt.show()
 
 
 pl_img(tr_sam_img[:5])
+
+model = Sequential([
+    Conv2D(16, 3, padding='same', activation='relu',
+           input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
+    MaxPooling2D(),
+    Conv2D(32, 3, padding='same', activation='relu'),
+    MaxPooling2D(),
+    Conv2D(64, 3, padding='same', activation='relu'),
+    MaxPooling2D(),
+    Flatten(),
+    Dense(512, activation='relu'),
+    Dense(1)
+])
+
+model.compile(optimizer='adam', loss=tf.keras.losses.BinaryCrossentropy(
+    from_logits=True), metrics=['accuracy'])
+
+result = model.fit_generator(
+    tr_data_gen,
+    steps_per_epoch=to_tr//batch_size,
+    epochs=epochs,
+    validation_data=va_data_gen,
+    validation_steps=to_va//batch_size
+)
+
+acc = result.history['accuracy']
+va_acc = result.history['val_accuracy']
+loss = result.history['loss']
+va_loss = result.history['val_loss']
+
+ep_ran = range(epochs)
+
+plt.figure(figsize=(8, 8))
