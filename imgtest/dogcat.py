@@ -66,11 +66,11 @@ def pl_img(img_arr):
     for i, ax in zip(img_arr, axes):
         ax.imshow(i)
         ax.axis('off')
-    # plt.tight_layout()
-    # plt.show()
+    plt.tight_layout()
+    plt.show()
 
 
-pl_img(tr_sam_img[:5])
+# pl_img(tr_sam_img[:5])
 
 model = Sequential([
     Conv2D(16, 3, padding='same', activation='relu',
@@ -88,6 +88,8 @@ model = Sequential([
 model.compile(optimizer='adam', loss=tf.keras.losses.BinaryCrossentropy(
     from_logits=True), metrics=['accuracy'])
 
+model.summary()
+
 result = model.fit_generator(
     tr_data_gen,
     steps_per_epoch=to_tr//batch_size,
@@ -104,3 +106,23 @@ va_loss = result.history['val_loss']
 ep_ran = range(epochs)
 
 plt.figure(figsize=(8, 8))
+
+plt.subplot(1, 2, 1)
+plt.plot(ep_ran, acc, label='Training Accurary')
+plt.plot(ep_ran, va_acc, label='Validation Accurary')
+plt.legend(loc='lower right')
+plt.title("tr & val acc")
+
+plt.subplot(1, 2, 2)
+plt.plot(ep_ran, loss, label='tr loss')
+plt.plot(ep_ran, va_loss, label='va loss')
+plt.legend(loc="upper right")
+plt.title('tr & val acc')
+plt.show()
+
+img_gen = ImageDataGenerator(rescale=1./255, horizontal_flip=True)
+tr_data_gen = img_gen.flow_from_directory(
+    batch_size=batch_size, directory=tr_dir, shuffle=True, target_size=(IMG_HEIGHT, IMG_WIDTH))
+aug_img = [tr_data_gen[0][0][0] for i in range(5)]
+
+pl_img(aug_img)
