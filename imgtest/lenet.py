@@ -20,7 +20,7 @@ Y = tf.keras.layers.Dense(10, activation='softmax')(H)
 model = tf.keras.models.Model(X, Y)
 model.compile(loss='categorical_crossentropy', metrics='accuracy')
 model.fit(tx, ty, epochs=10)
-pred = model.predict(ty[0:5])
+pred = model.predict(tx[0:5])
 pd.DataFrame(pred).round(2)
 ty[0:5]
 model.summary()
